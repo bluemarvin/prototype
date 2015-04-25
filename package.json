@@ -1,0 +1,47 @@
+{
+  "name": "bloxvr",
+  "version": "1.0.0",
+  "description": "BLOX!",
+  "main": "src/server/server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bluemarvin/bloxvr.git"
+  },
+  "author": "Randall Barker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bluemarvin/bloxvr/issues"
+  },
+  "homepage": "https://github.com/bluemarvin/bloxvr",
+  "engines": {
+    "node": "0.10.38"
+  },
+  "dependencies": {
+    "autoprefixer": "^5.1.0",
+    "babelify": "^5.0.4",
+    "browserify": "^9.0.3",
+    "express": "^4.12.2",
+    "gl-matrix": "^2.1.0",
+    "morgan": "^1.5.2",
+    "uuid": "^2.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.3.7",
+    "onchange": "^1.0.0"
+  },
+  "scripts": {
+    "start": "export NODE_ENVIRONMENT='production' && npm run build && node src/server/server",
+    "prod": "npm start",
+    "dev": "export NODE_ENVIRONMENT='development' && npm run build && nodemon src/server/server --watch src/shared/  --watch src/server/ --watch src/client/index.html & npm run watch",
+    "build": "npm run build:css && npm run build:js && npm run build:shaders",
+    "build:css": "npm run mkdir:css && autoprefixer --browsers 'last 10 versions' --map --no-cascade src/client/css/app.css -o build/css/app.css",
+    "build:js": "if [[ $NODE_ENVIRONMENT == 'production' ]]; then echo export SOURCE_MAPS=0; else export SOURCE_MAPS=1; fi ; echo $SOURCE_MAPS && npm run mkdir:js && browserify src/client/js/app.js --debug=$SOURCE_MAPS -t [ babelify --only src/client/js/ ] -o build/js/app.js",
+    "build:shaders": "python tools/shadertool.py -p src/client/js/blox/shaders -o src/client/js/blox/shaders.js",
+    "watch": "npm run watch:css & npm run watch:js & npm run watch:shaders",
+    "watch:css": "onchange src/client/{*,**/*}.css -- npm run build:css",
+    "watch:js": "onchange src/{shared,client/js}/{*,**/*}.js -- npm run build:js",
+    "watch:shaders": "onchange src/client/js/blox/shaders/{*.fp,*.vp} -- npm run build:shaders",
+    "mkdir:css": "mkdir -p build/css",
+    "mkdir:js": "mkdir -p build/js"
+  }
+}

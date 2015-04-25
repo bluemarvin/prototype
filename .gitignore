@@ -1,0 +1,7 @@
+*.swp
+.DS_Store
+build
+db/
+node_modules
+npm-debug.log
+src/client/js/blox/shaders.js
